@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import ReactDOM from 'react-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { Tasks } from '../api/tasks.js'
@@ -17,6 +17,21 @@ class App extends Component{
   //   ]
   // }
 
+  handleSubmit(event){
+    event.preventDefault();
+
+    // busca el text field a traves de React.ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
+
+    Tasks.insert({
+      text,
+      createdAt: new Date()
+    });
+
+    // limpiar el input field
+    ReactDOM.findDOMNode(this.refs.textInput).value = '';
+  }
+
   renderTasks(){
     // se usas el prop task wraps con withTracker
     return this.props.tasks.map((task) => (
@@ -29,8 +44,16 @@ class App extends Component{
       <div className="container">
         <header>
           <h1>Todo List</h1>
-        </header>
 
+          <form className="new-task" onSubmit={this.handleSubmit.bind(this)}>
+            <input
+              type="text"
+              ref="textInput"
+              placeholder="Type to add new tasks"
+            />
+          </form>
+
+        </header>
         <ul>
           {this.renderTasks()}
         </ul>
@@ -42,6 +65,6 @@ class App extends Component{
 export default withTracker(() => {
   // se puede usar las task como prop
   return {
-    tasks: Tasks.find({}).fetch(),
+    tasks: Tasks.find({},{sort: { createdAt: -1 } }).fetch(),
   }
 })(App);
