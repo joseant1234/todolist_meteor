@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Tasks } from '../api/tasks.js';
 
 export default class Task extends Component{
-  
+
   constructor(props){
   	super(props);
   }
@@ -29,14 +29,16 @@ export default class Task extends Component{
       		&times;
       	</button>
 
-      	<input 
+      	<input
       		type="checkbox"
       		readOnly
       		checked={!!this.props.task.checked}
       		onClick={this.toggleChecked.bind(this)}
       	/>
-      
-      	<span className="text">{this.props.task.text}</span>
+
+      	<span className="text">
+          <strong>{this.props.task.username}</strong>: {this.props.task.text}
+        </span>
       </li>
     )
   }
