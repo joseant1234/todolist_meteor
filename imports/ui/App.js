@@ -31,13 +31,19 @@ class App extends Component{
     // busca el text field a traves de React.ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
 
-    Tasks.insert({
-      text,
-      createdAt: new Date(),
-      owner: Meteor.userId(),  // _id of logged in user
-      username: Meteor.user().username,  // username of logged in user
-    });
+    // Tasks.insert({
+    //   text,
+    //   createdAt: new Date(),
+    //   owner: Meteor.userId(),  // _id of logged in user
+    //   username: Meteor.user().username,  // username of logged in user
+    // });
 
+    // al usar el metodo Meteor.call en el client side se hace uso de Optimistic UI
+    // El client side envia un request al servidor como si se tratase de AJAX
+    // Ocurre una simulacion q ocurre de manera directa en el cliente, este intenta predict la salida del servidor
+    // Por tanto al crear una nueva tarea, esta va aparecer en la pantalla antes del resultado del servidor
+    // Luego, si el resultado del servidor es diferente a la simulacion, solo se actualiza la UI, parchando el contenido de acuerdo al resultado del servidor.
+    Meteor.call('task.insert',text);
     // limpiar el input field
     ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
