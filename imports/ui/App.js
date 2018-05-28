@@ -63,9 +63,16 @@ class App extends Component{
     // return this.props.tasks.map((task) => (
     //   <Task key={task._id} task={task} />
     // ));
-    return filteredTasks.map((task) => (
-      <Task key={task._id} task={task} />
-    ));
+    return filteredTasks.map((task) => {
+      const currentUserId = this.props.currentUser && this.props.currentUser._id;
+      const showPrivateButton = task.owner == currentUserId;
+      return (
+        <Task
+          key={task._id}
+          task={task}
+          showPrivateButton={showPrivateButton} />
+      );
+    });
   }
 
   render(){
@@ -106,6 +113,9 @@ class App extends Component{
 }
 
 export default withTracker(() => {
+  // dado q se hizo meteor remove autopublish para filtrar la data q el cliente recibe de la bd, se usa publish and subscribe
+  // el cliente se suscribe a la data q la publicacion envia
+  Meteor.subscribe('tasks');
   // se puede usar las tasks como prop
   // $ne es un operador de mongodb, el cual expresa q los documentos q no es igual a un valor, en este caso no igual a true, opera incluso para los documentos q no contienen el campo checked
   return {
